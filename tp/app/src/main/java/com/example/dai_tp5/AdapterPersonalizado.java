@@ -1,6 +1,7 @@
 package com.example.dai_tp5;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,13 +10,15 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.util.List;
 
 public class AdapterPersonalizado extends BaseAdapter {
     private Context context;
-    private List<Pelicula> peliculas;
+    private ArrayList<Pelicula> peliculas;
 
-    public AdapterPersonalizado(Context context, List<Pelicula> peliculas) {
+    public AdapterPersonalizado(Context context, ArrayList<Pelicula> peliculas) {
         this.context = context;
         this.peliculas = peliculas;
     }
@@ -37,13 +40,22 @@ public class AdapterPersonalizado extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        View VistaDevolver= LayoutInflater.from(context).inflate(R.layout.disenio_cada_celda,parent,false);
+        LayoutInflater inflador=(LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View VistaDevolver= inflador.inflate(R.layout.disenio_cada_celda,parent,false);
         ImageView imageView=VistaDevolver.findViewById(R.id.PosterPelicula);
         TextView titulo=VistaDevolver.findViewById(R.id.TituloPelicula);
         TextView año=VistaDevolver.findViewById(R.id.AñoDeSalida);
         titulo.setText(getItem(position).GetTitulo());
-        año.setText(getItem(position).GetAñoSalida());
+        año.setText(""+getItem(position).GetAñoSalida());
                 
         return VistaDevolver;
+    }
+    public void ActualizarLista(ArrayList<Pelicula> listaPeliculas)
+    {
+        Log.d("Actualizar",""+listaPeliculas.size());
+        peliculas.removeAll(peliculas);
+        Log.d("Actualizar",""+listaPeliculas.size());
+        peliculas.addAll(listaPeliculas);
+        Log.d("Actualizar",""+listaPeliculas.size());
     }
 }

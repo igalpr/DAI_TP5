@@ -1,10 +1,12 @@
 package com.example.dai_tp5;
+import android.util.Log;
+
 import java.net.URL;
 public class Pelicula {
     private int AñoSalida;
     private String Titulo;
     private URL UrlPoster;
-    private int ID_Pelicula;
+    private String ID_Pelicula;
 
     public void setAñoSalida(int añoSalida) {
         AñoSalida = añoSalida;
@@ -18,27 +20,27 @@ public class Pelicula {
         UrlPoster = urlPoster;
     }
 
-    public void setID_Pelicula(int ID_Pelicula) {
-        this.ID_Pelicula = ID_Pelicula;
-    }
+    public void setID_Pelicula(String ID_Pelicula) { this.ID_Pelicula = ID_Pelicula;}
 
     public URL getUrlPoster() {
         return UrlPoster;
     }
 
-    public int getID_Pelicula() {
+    public String getID_Pelicula() {
         return ID_Pelicula;
     }
 
-    public Pelicula(int añoSalida, String titulo, URL url,int idPelicula) {
-        AñoSalida = añoSalida;
-        Titulo = titulo;
-        UrlPoster=url;
-        ID_Pelicula=idPelicula;
-    }
     public int  GetAñoSalida()
     {
         return AñoSalida;
     }
     public String GetTitulo(){return Titulo;}
+
+    public Pelicula(int añoSalida, String titulo, URL url,String idPelicula) {
+        AñoSalida = añoSalida;
+        Titulo = titulo;
+        UrlPoster=url;
+        ID_Pelicula=idPelicula;
+        Log.d("constructor","agregar");
+    }
 }
