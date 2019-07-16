@@ -1,18 +1,23 @@
 package com.example.dai_tp5;
 import android.app.Fragment;
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.SearchView;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+
+import java.io.BufferedInputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
@@ -26,6 +31,7 @@ public class Buscar extends Fragment implements SearchView.OnQueryTextListener {
     ArrayList<Pelicula> ListPeliculas=new ArrayList<>();
     AdapterPersonalizado adaptador;
     ListView listViewACargar;
+    ArrayList<Bitmap> ListaDeImagenes=new ArrayList<>();
     String QueryElegida="";
     Context context;
     public View onCreateView(LayoutInflater inflador, ViewGroup parent, Bundle datosRecibidos)
@@ -92,6 +98,7 @@ public class Buscar extends Fragment implements SearchView.OnQueryTextListener {
             Log.d("onPostExecute",""+adaptador.getCount());
             listViewACargar.setAdapter(adaptador);
 
+
         }
         private void procesarJSONLeido(InputStreamReader JsonCrudo)
         {
@@ -126,4 +133,5 @@ public class Buscar extends Fragment implements SearchView.OnQueryTextListener {
             Log.d("procesarJSONLeido",""+ListPeliculas.size());
         }
     }
+
 }
