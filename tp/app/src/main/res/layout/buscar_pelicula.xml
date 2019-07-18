@@ -4,18 +4,24 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <SearchView
-        android:layout_width="match_parent"
+    <EditText
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:hint="Ingrese un texto a buscar"
         app:layout_constraintTop_toTopOf="parent"
-        android:id="@+id/SearchBuscar"
         app:layout_constraintLeft_toLeftOf="parent"
-        android:queryHint="ingrese algo que quiera buscar"
-        />
+        android:id="@+id/etIngreso"/>
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Buscar"
+        android:id="@+id/ButBoton"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toRightOf="@id/etIngreso"/>
     <ListView
         android:layout_width="wrap_content"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/SearchBuscar"
+        app:layout_constraintTop_toBottomOf="@id/etIngreso"
         android:id="@+id/ListaACargar"
         android:layout_height="wrap_content"/>
 </android.support.constraint.ConstraintLayout>

@@ -9,9 +9,13 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.SearchView;
+import android.widget.Toast;
+
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -25,33 +29,48 @@ import java.net.URL;
 import java.util.ArrayList;
 
 
-public class Buscar extends Fragment implements SearchView.OnQueryTextListener {
+public class Buscar extends Fragment implements View.OnClickListener {
     View VistaDevolver;
-    SearchView searchView;
-    ArrayList<Pelicula> ListPeliculas=new ArrayList<>();
+    Button boton;
+    EditText textoedit;
+    ArrayList<Pelicula> ListPeliculas;
     AdapterPersonalizado adaptador;
     ListView listViewACargar;
-    ArrayList<Bitmap> ListaDeImagenes=new ArrayList<>();
-    String QueryElegida="";
     Context context;
     public View onCreateView(LayoutInflater inflador, ViewGroup parent, Bundle datosRecibidos)
     {
+        Log.d("onCreateView","Entro");
         VistaDevolver=inflador.inflate(R.layout.buscar_pelicula,parent,false);
-        searchView=VistaDevolver.findViewById(R.id.SearchBuscar);
+        boton=VistaDevolver.findViewById(R.id.ButBoton);
+        textoedit=VistaDevolver.findViewById(R.id.etIngreso);
         listViewACargar=VistaDevolver.findViewById(R.id.ListaACargar);
-        adaptador=new AdapterPersonalizado(this.getActivity(),ListPeliculas);
-        searchView.setOnQueryTextListener(this);
+        //adaptador.notifyDataSetChanged();
+        boton.setOnClickListener(this);
         context=this.getActivity();
+
+        Log.d("onCreateView","Termine");
+
         return VistaDevolver;
 
     }
 
+    public void onClick(View v) {
+        String busqueda=textoedit.getText().toString();
+        ListPeliculas=new ArrayList<>();
+        TareaAsincronica miTarea=new TareaAsincronica();
+        miTarea.execute(busqueda);
+    }
+    /*
     @Override
     public boolean onQueryTextSubmit(String query) {
-        QueryElegida=query;
+        Log.d("onQueryTextSubmit","entro");
+        Log.d("onQueryTextSubmit",query);
+        //ListPeliculas.clear();
+        Log.d("onQueryTextSubmit",""+ListPeliculas.size());
         TareaAsincronica miTarea=new TareaAsincronica();
-        miTarea.execute();
+        miTarea.execute(query);
 
+        Log.d("onQueryTextSubmit","Iniciado el Async Task");
         return false;
 
     }
@@ -60,15 +79,18 @@ public class Buscar extends Fragment implements SearchView.OnQueryTextListener {
     public boolean onQueryTextChange(String newText) {
 
         return false;
-    }
-    private class TareaAsincronica extends AsyncTask<Void,Void, Void>
+    }*/
+    private class TareaAsincronica extends AsyncTask<String,Void, Void>
     {
 
         @Override
-        protected Void doInBackground(Void... voids) {
+        protected Void doInBackground(String... TextosABuscar) {
             try {
-                 URL rutaURL=new URL("http://www.omdbapi.com/?apikey=611f4378&s="+QueryElegida);
+
+                URL rutaURL=new URL("http://www.omdbapi.com/?apikey=611f4378&s="+TextosABuscar[0]);
                 HttpURLConnection MiConexion=(HttpURLConnection) rutaURL.openConnection();
+
+                Log.d("Conexion", "URL: "+rutaURL);
 
                 if(MiConexion.getResponseCode()==200)
                 {
@@ -76,6 +98,7 @@ public class Buscar extends Fragment implements SearchView.OnQueryTextListener {
                     InputStream cuerpoRespuesta=MiConexion.getInputStream();
                     InputStreamReader lectorRespuesta= new InputStreamReader(cuerpoRespuesta, "UTf-8");
                     procesarJSONLeido(lectorRespuesta);
+                    Log.d("Conexion", "Termine de procesar el JSON");
                 }
                 else
                 {
@@ -84,7 +107,7 @@ public class Buscar extends Fragment implements SearchView.OnQueryTextListener {
                 MiConexion.disconnect();
             }catch(Exception e)
             {
-
+                Log.d("Conexion", "Error en conexion: "+e.getMessage());
             }
             return null;
         }
@@ -93,24 +116,34 @@ public class Buscar extends Fragment implements SearchView.OnQueryTextListener {
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
             Log.d("onPostExecute",""+ListPeliculas.size());
-            //adaptador.ActualizarLista(ListPeliculas);
-            adaptador=new AdapterPersonalizado(context,ListPeliculas);
-            Log.d("onPostExecute",""+adaptador.getCount());
-            listViewACargar.setAdapter(adaptador);
-
+            if(ListPeliculas!=null)
+            {
+                //adaptador.ActualizarLista(ListPeliculas);
+                //adaptador=new AdapterPersonalizado(context,ListPeliculas);
+                Log.d("onPostExecute","Tengo ahora "+ListPeliculas.size()+" peliculas");
+                adaptador=new AdapterPersonalizado(getActivity(),ListPeliculas);
+                listViewACargar.setAdapter(adaptador);
+                adaptador.notifyDataSetChanged();
+                Log.d("onPostExecute","Seteado el adaptador");
+            }
+            else{
+                Toast.makeText(getActivity(),"no se han encontrado resultados", Toast.LENGTH_LONG).show();
+            }
 
         }
         private void procesarJSONLeido(InputStreamReader JsonCrudo)
         {
+            Log.d("procesarJSONLeido","Entro a procesar el JSON");
             JsonParser parseador;
             parseador=new JsonParser();
             JsonObject objetoJsonCrudito;
             objetoJsonCrudito=parseador.parse(JsonCrudo).getAsJsonObject();
             JsonArray arrSearch;
             arrSearch=objetoJsonCrudito.get("Search").getAsJsonArray();
-            for (JsonElement jsonActual:arrSearch) {
+            Log.d("procesarJSONLeido","Antes del for");
+            for (int i = 0; i < arrSearch.size(); i++) {
 
-                JsonObject objetoActual = jsonActual.getAsJsonObject();
+                JsonObject objetoActual = arrSearch.get(i).getAsJsonObject();
                 int AñoSalida = objetoActual.get("Year").getAsInt();
                 Log.d("Año",""+AñoSalida);
                 String Titulo = objetoActual.get("Title").getAsString();
@@ -128,7 +161,7 @@ public class Buscar extends Fragment implements SearchView.OnQueryTextListener {
                 Pelicula peli=new Pelicula(AñoSalida,Titulo,UrlPoster,ID_Pelicula);
                 ListPeliculas.add(peli);
 
-                Log.d("procesarJSONLeido","se agrego");
+                Log.d("procesarJSONLeido","se agrego" + peli.GetTitulo());
             }
             Log.d("procesarJSONLeido",""+ListPeliculas.size());
         }
