@@ -18,10 +18,16 @@
         android:id="@+id/ButBoton"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintLeft_toRightOf="@id/etIngreso"/>
-    <ListView
-        android:layout_width="wrap_content"
-        app:layout_constraintLeft_toLeftOf="parent"
+    <GridView
+        android:layout_width="match_parent"
+        app:layout_constraintLeft_toLeftOf="@+id/etIngreso"
         app:layout_constraintTop_toBottomOf="@id/etIngreso"
         android:id="@+id/ListaACargar"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:columnWidth="120sp"
+        android:numColumns="auto_fit"
+        android:orientation="vertical"
+        android:verticalSpacing="10sp"
+        android:horizontalSpacing="10sp"
+        android:gravity="start"/>
 </android.support.constraint.ConstraintLayout>

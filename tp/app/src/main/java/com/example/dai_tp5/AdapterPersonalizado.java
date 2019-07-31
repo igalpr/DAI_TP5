@@ -50,7 +50,7 @@ public class AdapterPersonalizado extends BaseAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         LayoutInflater inflador=(LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View VistaDevolver= inflador.inflate(R.layout.disenio_cada_celda,parent,false);
+        View VistaDevolver= inflador.inflate(R.layout.disenio_grid,parent,false);
         final ImageView imagen=VistaDevolver.findViewById(R.id.PosterPelicula);
         TextView titulo=VistaDevolver.findViewById(R.id.TituloPelicula);
         TextView año=VistaDevolver.findViewById(R.id.AñoDeSalida);

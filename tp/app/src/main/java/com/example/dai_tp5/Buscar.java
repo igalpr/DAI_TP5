@@ -9,8 +9,10 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.SearchView;
@@ -35,7 +37,7 @@ public class Buscar extends Fragment implements View.OnClickListener {
     EditText textoedit;
     ArrayList<Pelicula> ListPeliculas;
     AdapterPersonalizado adaptador;
-    ListView listViewACargar;
+    GridView listViewACargar;
     Context context;
     public View onCreateView(LayoutInflater inflador, ViewGroup parent, Bundle datosRecibidos)
     {
@@ -49,7 +51,16 @@ public class Buscar extends Fragment implements View.OnClickListener {
         context=this.getActivity();
 
         Log.d("onCreateView","Termine");
-
+        listViewACargar.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                MainActivity Principal=(MainActivity)getActivity();
+                Log.d("doInBackground",""+ListPeliculas.get(position).getID_Pelicula());
+                Principal.setIdPeli(ListPeliculas.get(position).getID_Pelicula());
+                Principal.setUrlPosterPeliculaElegida(ListPeliculas.get(position).getUrlPoster());
+                Principal.CambiarAlClick();
+            }
+        });
         return VistaDevolver;
 
     }
